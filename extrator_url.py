@@ -1,3 +1,6 @@
+from regex import padrao_url
+
+
 class ExtratorURL:
     def __init__(self, url):
         self.url = self.sanitiza_url(url)
@@ -10,8 +13,12 @@ class ExtratorURL:
             return ''
 
     def valida_url(self):
+        match = padrao_url.match(self.url)
         if not bool(self.url):
             raise ValueError('A URL está vazia')
+
+        if not match:
+            raise ValueError('A URL não é válida')  
 
     def get_url_base(self):
         indice_interrogacao = self.url.find('?')
@@ -31,8 +38,19 @@ class ExtratorURL:
         else:
             return self.get_url_parametros()[indice_valor:indice_e_comercial]
 
+    def __len__(self):
+        return len(self.url)
 
-valor = ExtratorURL(None)
+    def __str__(self):
+        return self.url + '\n' + 'Parâmetros: ' + self.get_url_parametros() + '\n' + 'URL Base: ' + self.get_url_base()
+
+    def __id__(self):
+        return id(self.url)
+
+
+valor = ExtratorURL('https://bytebank.com/cambio?quantidade=100&moedaOrigem=real&moedaDestino=dolar')
 quantidade = valor.get_valor_parametro('quantidade')
 
+print(valor)
+print('O tamanho da URL é: ', len(valor))
 print(quantidade)
